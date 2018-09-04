@@ -15,6 +15,7 @@ if (!isset($_SERVER['APP_ENV'])) {
     (new Dotenv())->load(__DIR__.'/../.env');
 }
 
+
 $env = $_SERVER['APP_ENV'] ?? 'dev';
 $debug = (bool) ($_SERVER['APP_DEBUG'] ?? ('prod' !== $env));
 
@@ -23,17 +24,25 @@ if ($debug) {
 
     Debug::enable();
 }
+Debug::enable();
 
 if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? false) {
+    var_dump('proxi');
     Request::setTrustedProxies(explode(',', $trustedProxies), Request::HEADER_X_FORWARDED_ALL ^ Request::HEADER_X_FORWARDED_HOST);
 }
 
 if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
+    var_dump('hosti');
+
     Request::setTrustedHosts(explode(',', $trustedHosts));
 }
 
 $kernel = new Kernel($env, $debug);
 $request = Request::createFromGlobals();
+
+var_dump($env);
+
 $response = $kernel->handle($request);
+
 $response->send();
 $kernel->terminate($request, $response);
